@@ -33,6 +33,10 @@ dependencies {
 	debugCompile 'com.github.pixwell-dev:OkReport:slack_reporter:0.0.5'
    	releaseCompile 'com.github.pixwell-dev:OkReport:slack_reporter_no_op:0.0.5'
 
+   	//Post the report via email
+    debugCompile 'com.github.pixwell-dev:OkReport:mail_reporter:0.0.5'
+    releaseCompile 'com.github.pixwell-dev:OkReport:mail_reporter_no_op:0.0.5'
+
 	//Trigger the report screen when the device is shaken
 	debugCompile 'com.github.pixwell-dev:OkReport:shake_gesture:0.0.5'
    	releaseCompile 'com.github.pixwell-dev:OkReport:shake_gesture_no_op:0.0.5'
