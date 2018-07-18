@@ -29,6 +29,7 @@ dependencies {
     compile project(':shake_gesture')
     compile project(':slack_reporter')
 
+    compile project(path: ':mail_reporter_no_op')
     //compile project(':shake_gesture_no_op')
     //compile project(':slack_reporter_no_op')
 
@@ -41,6 +42,7 @@ dependencies {
     androidTestCompile ('com.github.VictorAlbertos:DeviceAnimationTestRule:0.0.2') {
         exclude group: 'com.android.support'
     }
+
 }
 repositories {
     mavenCentral()

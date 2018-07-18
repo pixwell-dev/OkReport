@@ -15,10 +15,11 @@
  */package com.cookpad.okreport
 
 import android.app.Application
-import com.cookpad.core.collectDeviceSpecs
+
 import com.cookpad.core.initOkReport
 import com.cookpad.shake_gesture.ShakeGesture
-import com.cookpad.slack_reporter.SlackReporter
+
+import sk.pixwell.mail_reporter.MailReporter
 
 class OkReportApp : Application() {
     companion object {
@@ -29,7 +30,12 @@ class OkReportApp : Application() {
         super.onCreate()
         shakeGesture = ShakeGesture(this)
 
-        val slackReporter = SlackReporter(token, webhookURL, collectDeviceSpecs(this), nameChannelImages, notifyChannel = false)
-        initOkReport(this, shakeGesture, slackReporter)
+        val mailReporter = MailReporter("New bug report from ${getString(R.string.app_name)}",
+                "email@email.com",
+                "email@pixwell.sk",
+                "b1435dbc109a69a5f77e1cb05c72c63d",
+                "cbed8dbb5b90aef234b356bf893420f1",
+                "smtp.emailserver.com", 587);
+        initOkReport(this, shakeGesture, mailReporter)
     }
 }

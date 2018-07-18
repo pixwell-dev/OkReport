@@ -1,6 +1,6 @@
 # OkReport
 
-An **Android library** which **allows testers to submit reports without living the app**.
+This is a fork of an **Android library** which **allows testers to submit reports without living the app**.
 
 Because not all bugs are easy to catch, because not all bugs end with a clean reported crash on some fancy console as the result of a nice pipeline settled for logging exceptions. That's it, **there is always some wrong behaviour which can not be typified as a bug per se**; and therefore, it requires the **supervision of a human eye** to acknowledge it as a malfunction of the system. **OkReport is the perfect tool for tracking that**.
 
@@ -30,12 +30,12 @@ dependencies {
 	compile 'com.github.cookpad:OkReport:core:0.0.5'
 
 	//Post the report on a Slack channel
-	debugCompile 'com.github.cookpad:OkReport:slack_reporter:0.0.5'
-   	releaseCompile 'com.github.cookpad:OkReport:slack_reporter_no_op:0.0.5'
+	debugCompile 'com.github.pixwell-dev:OkReport:slack_reporter:0.0.5'
+   	releaseCompile 'com.github.pixwell-dev:OkReport:slack_reporter_no_op:0.0.5'
 
 	//Trigger the report screen when the device is shaken
-	debugCompile 'com.github.cookpad:OkReport:shake_gesture:0.0.5'
-   	releaseCompile 'com.github.cookpad:OkReport:shake_gesture_no_op:0.0.5'
+	debugCompile 'com.github.pixwell-dev:OkReport:shake_gesture:0.0.5'
+   	releaseCompile 'com.github.pixwell-dev:OkReport:shake_gesture_no_op:0.0.5'
 }
 ```
 
@@ -163,6 +163,7 @@ class CustomReporter() : Reporter {
 * Trigger gesture: [Seismic](https://github.com/square/seismic). Android device shake detection.
 * Take screenshots: [Screenshott](https://github.com/nisrulz/screenshott). Take a screenshot of your view layout programmatically.
 * Material Dialogs: [material-dialogs](https://github.com/afollestad/material-dialogs). A beautiful, fluid, and customizable dialogs API.
+* OkReport Original: [OkReport](https://github.com/cookpad/OkReport). Well it is original
 
 ## Limitations
 * OkReport is **not meant to be used as a way of getting feedback from final users on production environment**, it rather should be conceived as a communication tool to facilitate internal reporting.

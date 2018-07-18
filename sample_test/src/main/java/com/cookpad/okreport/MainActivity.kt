@@ -35,18 +35,10 @@ class MainActivity : Activity() {
 
     private fun shuffleBackground() {
         var counter = 0
-        val images = listOf(R.drawable._1, R.drawable._2, R.drawable._3, R.drawable._4, R.drawable._5)
+        val images = listOf(R.drawable._1)
         val ivBackground = findViewById<ImageView>(R.id.ivBackground)
         val wait = 2000L
+        ivBackground.setImageResource(images[0])
 
-        val handler = Handler()
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                ivBackground.setImageResource(images[counter])
-                counter++
-                if (counter == 4) counter = 0
-                handler.postDelayed(this, wait)
-            }
-        }, 500)
     }
 }
