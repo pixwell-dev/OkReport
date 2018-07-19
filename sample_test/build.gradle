@@ -29,7 +29,7 @@ dependencies {
     compile project(':shake_gesture')
     compile project(':slack_reporter')
 
-    compile project(path: ':mail_reporter_no_op')
+    compile project(path: ':mail_reporter')
     //compile project(':shake_gesture_no_op')
     //compile project(':slack_reporter_no_op')
 

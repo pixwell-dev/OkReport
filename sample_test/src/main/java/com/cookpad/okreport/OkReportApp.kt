@@ -30,7 +30,7 @@ class OkReportApp : Application() {
         super.onCreate()
         shakeGesture = ShakeGesture(this)
 
-        val mailReporter = MailReporter("New bug report from ${getString(R.string.app_name)}",
+        val mailReporter = MailReporter(this,"New bug report from ${getString(R.string.app_name)}",
                 "email@email.com",
                 "email@pixwell.sk",
                 "b1435dbc109a69a5f77e1cb05c72c63d",

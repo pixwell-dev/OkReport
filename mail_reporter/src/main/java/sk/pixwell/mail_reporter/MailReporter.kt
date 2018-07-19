@@ -1,7 +1,6 @@
 package sk.pixwell.mail_reporter
 
-import com.cookpad.core.Reporter
-import com.cookpad.core.ReporterCallback
+import android.content.Context
 import com.cookpad.core.models.Report
 import javax.activation.FileDataSource
 import javax.mail.Transport
@@ -10,13 +9,16 @@ import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 import android.os.AsyncTask
+import com.cookpad.core.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.activation.DataHandler
+import javax.mail.BodyPart
 import javax.mail.Message
 import javax.mail.Session
 
 
-class MailReporter(private val subject: String, private val mailTo: String, private val mailFrom: String, val username: String, val password: String,
+class MailReporter(private val context: Context, private val subject: String, private val mailTo: String, private val mailFrom: String, val username: String, val password: String,
                    val host: String, val port: Int) : Reporter {
 
 
@@ -28,37 +30,9 @@ class MailReporter(private val subject: String, private val mailTo: String, priv
 
 
                     val session = createSessionObject()
-                    val message = MimeMessage(session)
-                    message.setFrom(InternetAddress(mailFrom));
-                    message.setRecipients(Message.RecipientType.TO,
-                            InternetAddress.parse(mailTo))
-                    message.setSubject(subject)
-                    val text = StringBuilder()
-                    text.append("Author ${report.author}\n\nIssue description:e${report.issue}\n\nSteps:\n")
-                    report.steps.forEachIndexed { index, it ->
+                    var message = MimeMessage(session)
 
-                        text.append("Step ${index + 1} description: ${it.title}\n")
-                    }
-                    val textBodyPart = MimeBodyPart()
-                    textBodyPart.setText(text.toString())
-
-
-                    val multipart = MimeMultipart()
-                    multipart.addBodyPart(textBodyPart)
-                    report.steps.forEachIndexed { index, it ->
-                        val messageBodyPart = MimeBodyPart()
-
-                        val file = it.pathImage
-                        val fileName = "Screenshot ${index + 1}"
-                        val source = FileDataSource(file)
-                        messageBodyPart.setDataHandler(DataHandler(source))
-                        messageBodyPart.setFileName(fileName)
-                        multipart.addBodyPart(messageBodyPart)
-                    }
-
-
-                    message.setContent(multipart)
-
+                    message = buildMessage(message, report)
 
 
                     Transport.send(message)
@@ -81,6 +55,73 @@ class MailReporter(private val subject: String, private val mailTo: String, priv
         asyncTask.execute(null)
 
     }
+
+    private fun buildMessage(message: MimeMessage, report: Report): MimeMessage {
+        message.setFrom(InternetAddress(mailFrom));
+        message.setRecipients(Message.RecipientType.TO,
+                InternetAddress.parse(mailTo))
+        message.setSubject(subject)
+
+
+
+        val multipart = MimeMultipart()
+        multipart.addBodyPart(buildTextMessage(report))
+
+        report.steps.forEachIndexed { index, it ->
+            val messageBodyPart = MimeBodyPart()
+
+            val file = it.pathImage
+            val fileName = "Screenshot ${index + 1}"
+            val source = FileDataSource(file)
+            messageBodyPart.setDataHandler(DataHandler(source))
+            messageBodyPart.setFileName(fileName)
+            multipart.addBodyPart(messageBodyPart)
+        }
+
+
+        message.setContent(multipart)
+        return message
+    }
+
+    private fun buildTextMessage(report: Report): BodyPart? {
+        val text = StringBuilder()
+
+
+        text.append("Date and time: ${getCurrentTimeStamp()}\n")
+        text.append("Author ${report.author}\n\nIssue description:e${report.issue}\n\nSteps:\n")
+        report.steps.forEachIndexed { index, it ->
+
+            text.append("Step ${index + 1} description: ${it.title}\n")
+        }
+
+        val deviceSpecs = collectDeviceSpecs(context)
+        text.append("Device make: ${deviceSpecs.deviceMake}\n")
+        text.append("Device Model: ${deviceSpecs.deviceModel}\n")
+        text.append("Device Resolution: ${deviceSpecs.deviceResolution}\n")
+        text.append("Device Density: ${deviceSpecs.deviceDensity}\n")
+        text.append("Version Code: ${deviceSpecs.versionCode}\n")
+        text.append("Version Release: ${deviceSpecs.versionRelease}\n")
+        text.append("Android Version: ${deviceSpecs.locale}\n")
+
+        val networkSpecs = collectNetworkSpecs(context)
+        text.append("Network available: ${networkSpecs.available}\n")
+        text.append("Network connected: ${networkSpecs.connected}\n")
+        text.append("Network failover: ${networkSpecs.failover}\n")
+        text.append("Network roaming: ${networkSpecs.roaming}\n")
+        text.append("Network type: ${networkSpecs.typeName}\n")
+        text.append("Network subtype: ${networkSpecs.subtypeName}\n")
+
+        val textBodyPart = MimeBodyPart()
+        textBodyPart.setText(text.toString())
+        return textBodyPart;
+    }
+
+    fun getCurrentTimeStamp(): String {
+        val sdfDate = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.GERMANY)//dd/MM/yyyy
+        val now = Date()
+        return sdfDate.format(now)
+    }
+
 
     private fun createSessionObject(): Session? {
         val properties = Properties()

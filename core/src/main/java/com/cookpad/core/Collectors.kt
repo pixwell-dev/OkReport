@@ -18,6 +18,7 @@ package com.cookpad.core
 
 import android.content.Context
 import android.content.res.Resources
+import android.net.ConnectivityManager
 import android.os.Build
 import android.util.DisplayMetrics
 
@@ -25,6 +26,7 @@ data class DeviceSpecs(val deviceMake: String, val deviceModel: String, val devi
                        val deviceDensity: String, val versionCode: String, val versionRelease: String,
                        val androidVersion: String, val locale: String)
 
+data class NetworkSpecs(val connected: Boolean, val failover: Boolean, val roaming: Boolean, val available: Boolean, val typeName: String, val subtypeName: String)
 /**
  * Handy information about the device and the build version, such us device model, locale or current version code.
  */
@@ -41,6 +43,13 @@ fun collectDeviceSpecs(context: Context): DeviceSpecs {
     val locale = defaultLocale()
 
     return DeviceSpecs(deviceMake, deviceModel, deviceResolution, deviceDensity, versionCode, versionRelease, androidVersion, locale)
+}
+
+fun collectNetworkSpecs(context: Context): NetworkSpecs {
+    val conMgr: ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val netInfo = conMgr.activeNetworkInfo
+
+    return NetworkSpecs(netInfo.isConnected, netInfo.isFailover, netInfo.isRoaming, netInfo.isAvailable, netInfo.typeName, netInfo.subtypeName)
 }
 
 private fun getDensityString(displayMetrics: DisplayMetrics): String =
